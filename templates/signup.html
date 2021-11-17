@@ -22,12 +22,14 @@
     <input type="text" class="form-control" name="username" id="exampleInputEmail1" aria-describedby="emailHelp">
     <div id="emailHelp" class="form-text">We'll never share your email with anyone else.</div>
   </div>
-  <div class="dropdown">
-  <select class="btn btn-secondary dropdown-toggle" name="user_type" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
-    <option value="seeker" class="dropdown-item" >Job Seeker</optopn>
-    <option value="recruiter" class="dropdown-item" >Recruiter</optopn>
-  </select>
-</div>
+  <div class="mb-3">
+  <label for="exampleInputEmail1" class="form-label">User Type</label>
+    <select class="form-select" name="user_type" aria-label="Default select example">
+      <option selected>Open this select menu</option>
+      <option value="seeker">Job Seeker</option>
+      <option value="recruiter">Recruiter</option>
+    </select>
+  </div>
   <div class="row g-3 align-items-center">
   <div class="col-auto">
     <label for="inputPassword6" class="col-form-label">Password</label>

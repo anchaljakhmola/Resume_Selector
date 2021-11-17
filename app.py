@@ -39,7 +39,7 @@ def index():
     # db.session.add(_user)
     # db.session.commit()
     # dbData = User.query.all()
-    return render_template("index.html") #,dbData = dbData
+    return render_template("login.html") #,dbData = dbData
 
 @app.route('/signup',methods = ['GET', 'POST'])
 def signup():
@@ -70,11 +70,14 @@ def do_login():
      if(request.method=='POST'):
         username = request.form.get('username')
         password = request.form.get('password')
+        user_type = request.form.get('user_type')
         check_user = User.query.filter_by(username=username).first()
         if(check_user is not None):
-            if(check_user.password == password):
+            if(check_user.password == password and check_user.user_type == user_type):
                 login_user(check_user)
-                return render_template("index.html")
+                if(str(user_type) == 'recruiter'):
+                    return render_template("index.html")
+                return render_template("user_seeker.html")
             else:
                 return "Incorrect Password"
         else:
