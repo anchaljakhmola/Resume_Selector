@@ -1,12 +1,18 @@
+import os
 from enum import unique
-from flask import Flask,render_template,request
+from flask import Flask,render_template,request,flash, redirect, url_for
+from werkzeug.utils import secure_filename
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager, login_manager, login_user, logout_user, login_required, UserMixin
 
 app = Flask(__name__)
 p='12345'
+UPLOAD_FOLDER = './uploads'
+ALLOWED_EXTENSIONS = {'pdf'}
+
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:%s@localhost/resume_build'%p
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 app.config['SECRET_KEY'] = 'secrethaibhai'
 db = SQLAlchemy(app)
 
@@ -82,6 +88,29 @@ def do_login():
                 return "Incorrect Password"
         else:
             return "No such User exists"
+
+def allowed_file(filename):
+    return '.' in filename and \
+           filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
+@app.route('/user_seeker', methods=['GET', 'POST'])
+def upload_file():
+    if(request.method == 'POST'):
+        # check if the post request has the file part
+        if 'file' not in request.files:
+            flash('No file part')
+            return redirect(request.url)
+        file = request.files['file']
+        # If the user does not select a file, the browser submits an
+        # empty file without a filename.
+        if file.filename == '':
+            flash('No selected file')
+            return redirect(request.url)
+        if file and allowed_file(file.filename):
+            filename = secure_filename(file.filename)
+            file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+            return "Successfully Uploadded"                   #redirect(url_for('download_file', name=filename))
+    return "Wrong"
 
 if __name__ == "__main__":
     app.run(debug=True,port=5600)
