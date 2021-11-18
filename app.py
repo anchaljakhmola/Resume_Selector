@@ -8,6 +8,7 @@ from enum import unique
 from flask import Flask,render_template,request,flash, redirect, url_for
 from werkzeug.utils import secure_filename
 from flask import send_from_directory
+from sqlalchemy.sql import text
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager, login_manager, login_user, logout_user, login_required, UserMixin
 
@@ -279,7 +280,9 @@ def download_file(name):
 def fetch_data():
     if(request.method == 'POST'):
         area = request.form.get('areas_select')
-        pass
+        data=File_Data.query.with_entities(text(area),File_Data.filepath)
+        print(data)
+        return render_template('index.html', data=data)
 
 if __name__ == "__main__":
     app.run(debug=True,port=5600)

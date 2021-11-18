@@ -54,13 +54,13 @@
 <div class="mb-3">
 <select class="form-select" aria-label="Default select example" name="areas_select">
   <option selected>Open this select menu</option>
-  <option value="Data analytics">Data Analytics</option>
-  <option value="Project management">Project Management</option>
-  <option value="SDE">Software Developement</option>
-  <option value="Operations management">Operations Management</option>
-  <option value="Research Analyst">Research Analyst</option>
-  <option value="Supply chain">Supply chain</option>
-  <option value="Healthcare">Healthcare</option>
+  <option value="data">Data Analytics</option>
+  <option value="project">Project Management</option>
+  <option value="sde">Software Developement</option>
+  <option value="operations">Operations Management</option>
+  <option value="research">Research Analyst</option>
+  <option value="supplychain">Supply chain</option>
+  <option value="healthcare">Healthcare</option>
 </select>
 </div>
 <button type="submit" class="btn btn-primary">Submit</button>
@@ -75,13 +75,10 @@
       <th scope="col">Download</th>
     </tr>
   </thead>
-  <tbody>
-    {% for item in dbData %}
-    <tr>
-      <th scope="row">{{item.id}}</th>
-      <td>{{item.username}}</td>
-      <td>{{item.password}}</td>
-      <td>{{item.email}}</td>
+  <tbody>                                          
+    {% for item in data %}
+    <tr><td>{{item[0]}}</td>
+    <td><a href="http://127.0.0.1:5600/uploads/{{item[1]}}">Download</a></td>
     </tr>
     {% endfor %}
   </tbody>
