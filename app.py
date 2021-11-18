@@ -1,5 +1,6 @@
 import os
 import PyPDF2
+from sqlalchemy.sql.expression import desc
 import textract
 import re
 import string
@@ -280,7 +281,7 @@ def download_file(name):
 def fetch_data():
     if(request.method == 'POST'):
         area = request.form.get('areas_select')
-        data=File_Data.query.with_entities(text(area),File_Data.filepath)
+        data=File_Data.query.with_entities(text(area),File_Data.filepath).order_by(desc(text(area)))
         print(data)
         return render_template('index.html', data=data)
 
