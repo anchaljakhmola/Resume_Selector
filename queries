@@ -1,0 +1,15 @@
+#### to create file_data table
+
+CREATE TABLE `resume_build`.`file_data` (
+'filepath' VARCHAR(40) NOT NULL,
+'sde' INT UNSIGNED NULL,
+'research' INT UNSIGNED NULL,
+'operations' INT UNSIGNED NULL,
+'supplychain' INT UNSIGNED NULL,
+'project' INT UNSIGNED NULL,
+'data' INT UNSIGNED NULL,
+'healthcare' INT UNSIGNED NULL,
+ PRIMARY KEY (`filepath`),
+ UNIQUE INDEX `filepath_UNIQUE` (`filepath` ASC) VISIBLE);
+ 
+ #############end###################
