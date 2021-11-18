@@ -4,17 +4,10 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager, login_manager, login_user, logout_user, login_required, UserMixin
 
 app = Flask(__name__)
-'''
-app.config['MYSQL_HOST'] = 'localhost'
-app.config['MYSQL_USER'] = 'root'
-app.config['MYSQL_PASSWORD'] = 'Hello@123'
-app.config['MYSQL_DB'] = 'resume_build'
-'''
-#app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:@localhost/resume_build'
-p='hello123'
+p='12345'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:%s@localhost/resume_build'%p
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-app.config['SECRET_KEY'] = 'Hello'
+app.config['SECRET_KEY'] = 'secrethaibhai'
 db = SQLAlchemy(app)
 
 login_manager = LoginManager()
