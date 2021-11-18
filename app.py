@@ -7,11 +7,12 @@ import pandas as pd
 from enum import unique
 from flask import Flask,render_template,request,flash, redirect, url_for
 from werkzeug.utils import secure_filename
+from flask import send_from_directory
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager, login_manager, login_user, logout_user, login_required, UserMixin
 
 app = Flask(__name__)
-p='hello123'
+p='12345'
 UPLOAD_FOLDER = './uploads'
 ALLOWED_EXTENSIONS = {'pdf'}
 
@@ -31,17 +32,7 @@ class User(UserMixin,db.Model):
     
     def get_id(self):
            return (self.username)
-
-@login_manager.user_loader
-def load_user(user_id):
-    return User.query.get(user_id)
-        
-# _user = User('admin', 'admin123', 'admin@example.com')
-# db.session.add(_user)
-# db.session.commit()
-#dbData = user.query.all()
-# db.session.add(_user)
-# db.session.commit()
+       
 class File_Data(db.Model):
     __tablename__ = 'file_data'
     fileid=db.Column(db.Integer,primary_key = True)
@@ -66,8 +57,17 @@ class File_Data(db.Model):
         self.project=project
         self.data=data
         self.healthcare=healthcare
-
-
+    
+@login_manager.user_loader
+def load_user(user_id):
+    return User.query.get(user_id)
+        
+# _user = User('admin', 'admin123', 'admin@example.com')
+# db.session.add(_user)
+# db.session.commit()
+#dbData = user.query.all()
+# db.session.add(_user)
+# db.session.commit()
 
 @app.route("/")
 def index():
@@ -243,11 +243,7 @@ def parse_pdf(filepath,filename):
     f=File_Data(filename,scores[0],scores[1],scores[2],scores[3],scores[4],scores[5],scores[6])
     db.session.add(f)
     db.session.commit()
-    # Create a data frame with the scores summary
-    #summary = pd.DataFrame(scores,index=terms.keys(),columns=['score']).sort_values(by='score',ascending=False)
-    #summary
 
-    #print(summary)
 
 def allowed_file(filename):
     return '.' in filename and \
@@ -272,7 +268,18 @@ def upload_file():
             file.save(filepath)
             summry = parse_pdf(filepath,filename)
             return "Successfully Uploaded"                  #redirect(url_for('download_file', name=filename))
+            #return redirect(url_for('download_file', name=filename))
     return "Wrong"
+
+@app.route('/uploads/<name>')
+def download_file(name):
+    return send_from_directory(app.config["UPLOAD_FOLDER"], name)
+
+@app.route('/fetch_data',methods=['GET', 'POST'])
+def fetch_data():
+    if(request.method == 'POST'):
+        area = request.form.get('areas_select')
+        pass
 
 if __name__ == "__main__":
     app.run(debug=True,port=5600)

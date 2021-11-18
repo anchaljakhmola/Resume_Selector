@@ -50,12 +50,21 @@
 
 <div class="container my-3">
 <h3>Select Area</h3>
-  <select class="form-select" aria-label="Default select example">
+<form action="/fetch_data" method=post>
+<div class="mb-3">
+<select class="form-select" aria-label="Default select example" name="areas_select">
   <option selected>Open this select menu</option>
-  <option value="1">Data Analytics</option>
-  <option value="2">Information Security</option>
-  <option value="3">Software Developement</option>
+  <option value="Data analytics">Data Analytics</option>
+  <option value="Project management">Project Management</option>
+  <option value="SDE">Software Developement</option>
+  <option value="Operations management">Operations Management</option>
+  <option value="Research Analyst">Research Analyst</option>
+  <option value="Supply chain">Supply chain</option>
+  <option value="Healthcare">Healthcare</option>
 </select>
+</div>
+<button type="submit" class="btn btn-primary">Submit</button>
+</form>
 </div>
 <div class="container my-3">
 <h3>Resume Information</h3>
