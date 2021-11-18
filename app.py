@@ -11,7 +11,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager, login_manager, login_user, logout_user, login_required, UserMixin
 
 app = Flask(__name__)
-p='12345'
+p='hello123'
 UPLOAD_FOLDER = './uploads'
 ALLOWED_EXTENSIONS = {'pdf'}
 
@@ -31,7 +31,7 @@ class User(UserMixin,db.Model):
     
     def get_id(self):
            return (self.username)
-    
+
 @login_manager.user_loader
 def load_user(user_id):
     return User.query.get(user_id)
@@ -42,6 +42,32 @@ def load_user(user_id):
 #dbData = user.query.all()
 # db.session.add(_user)
 # db.session.commit()
+class File_Data(db.Model):
+    __tablename__ = 'file_data'
+    fileid=db.Column(db.Integer,primary_key = True)
+    filepath = db.Column(db.String(40))
+    sde = db.Column(db.Integer)
+    research = db.Column(db.Integer)
+    operations = db.Column(db.Integer)
+    supplychain = db.Column(db.Integer)
+    project = db.Column(db.Integer)
+    data = db.Column(db.Integer)
+    healthcare = db.Column(db.Integer)
+
+    def get_id(self):
+        return (self.file_path)
+    
+    def __init__(self, filepath, sde, research, operations, supplychain, project, data, healthcare):
+        self.filepath =filepath
+        self.sde= sde
+        self.research=research
+        self.operations=operations
+        self.supplychain=supplychain
+        self.project=project
+        self.data=data
+        self.healthcare=healthcare
+
+
 
 @app.route("/")
 def index():
@@ -94,7 +120,7 @@ def do_login():
         else:
             return "No such User exists"
         
-def parse_pdf(filepath):
+def parse_pdf(filepath,filename):
     # Open pdf file
     pdfFileObj = open(filepath,'rb')
 
@@ -214,12 +240,14 @@ def parse_pdf(filepath):
                     healthcare +=1
             scores.append(healthcare)
 
-
+    f=File_Data(filename,scores[0],scores[1],scores[2],scores[3],scores[4],scores[5],scores[6])
+    db.session.add(f)
+    db.session.commit()
     # Create a data frame with the scores summary
-    summary = pd.DataFrame(scores,index=terms.keys(),columns=['score']).sort_values(by='score',ascending=False)
-    summary
+    #summary = pd.DataFrame(scores,index=terms.keys(),columns=['score']).sort_values(by='score',ascending=False)
+    #summary
 
-    print(summary)
+    #print(summary)
 
 def allowed_file(filename):
     return '.' in filename and \
@@ -242,7 +270,7 @@ def upload_file():
             filename = secure_filename(file.filename)
             filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
             file.save(filepath)
-            summry = parse_pdf(filepath)
+            summry = parse_pdf(filepath,filename)
             return "Successfully Uploaded"                  #redirect(url_for('download_file', name=filename))
     return "Wrong"
 
