@@ -17,12 +17,12 @@
     <div class="container my-3">
     <h3>Sign up</h3>
         <form action="/do_signup" method="POST">
-  <div class="mb-3">
+  <div class="mb-3 col-sm-6">
     <label for="exampleInputEmail1" class="form-label">Email address</label>
     <input type="text" class="form-control" name="username" id="exampleInputEmail1" aria-describedby="emailHelp">
     <div id="emailHelp" class="form-text">We'll never share your email with anyone else.</div>
   </div>
-  <div class="mb-3">
+  <div class="mb-3 col-sm-6">
   <label for="exampleInputEmail1" class="form-label">User Type</label>
     <select class="form-select" name="user_type" aria-label="Default select example">
       <option selected>Open this select menu</option>
@@ -43,10 +43,6 @@
     </span>
   </div>
 </div>
-  {% comment %} <div class="mb-3 form-check">
-    <input type="checkbox" class="form-check-input" id="exampleCheck1">
-    <label class="form-check-label" for="exampleCheck1">Check me out</label>
-  </div> {% endcomment %}
   <button type="submit" class="btn btn-primary">Submit</button>
 </form>
 </div>

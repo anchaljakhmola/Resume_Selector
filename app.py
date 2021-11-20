@@ -1,5 +1,6 @@
 import os
 import PyPDF2
+import js2py
 from sqlalchemy.sql.expression import desc
 import textract
 import re
@@ -78,7 +79,7 @@ def index():
     # db.session.add(_user)
     # db.session.commit()
     # dbData = User.query.all()
-    return render_template("login.html") #,dbData = dbData
+    return render_template("home.html") #,dbData = dbData
 
 @app.route('/signup',methods = ['GET', 'POST'])
 def signup():
@@ -121,6 +122,12 @@ def do_login():
                 return "Incorrect Password"
         else:
             return "No such User exists"
+
+@app.route('/logout',methods=['GET','POST'])
+@login_required
+def logout():
+    logout_user()
+    return render_template("home.html")
         
 def parse_pdf(filepath,filename):
     # Open pdf file
@@ -269,7 +276,7 @@ def upload_file():
             filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
             file.save(filepath)
             summry = parse_pdf(filepath,filename)
-            return "Successfully Uploaded"                  #redirect(url_for('download_file', name=filename))
+            return render_template("home.html")                 #redirect(url_for('download_file', name=filename))
             #return redirect(url_for('download_file', name=filename))
     return "Wrong"
 
@@ -281,9 +288,12 @@ def download_file(name):
 def fetch_data():
     if(request.method == 'POST'):
         area = request.form.get('areas_select')
-        data=File_Data.query.with_entities(text(area),File_Data.filepath).order_by(desc(text(area)))
-        print(data)
-        return render_template('index.html', data=data)
+        if(area is not None):
+            data=File_Data.query.with_entities(text(area),File_Data.filepath).order_by(desc(text(area)))
+            print(data)
+            return render_template('index.html', data=data)
+        else:
+            return render_template("index.html")
 
 if __name__ == "__main__":
     app.run(debug=True,port=5600)
