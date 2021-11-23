@@ -276,7 +276,7 @@ def upload_file():
             filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
             file.save(filepath)
             summry = parse_pdf(filepath,filename)
-            return render_template("home.html")                 #redirect(url_for('download_file', name=filename))
+            return render_template("message.html")                 #redirect(url_for('download_file', name=filename))
             #return redirect(url_for('download_file', name=filename))
     return "Wrong"
 
