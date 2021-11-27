@@ -1,11 +1,10 @@
 import os
 import PyPDF2
-import js2py
 from sqlalchemy.sql.expression import desc
-import textract
 import re
 import string
 import pandas as pd
+import mysql.connector
 from enum import unique
 from flask import Flask,render_template,request,flash, redirect, url_for
 from werkzeug.utils import secure_filename
@@ -16,6 +15,7 @@ from flask_login import LoginManager, login_manager, login_user, logout_user, lo
 
 app = Flask(__name__)
 p='12345'
+_username=""
 UPLOAD_FOLDER = './uploads'
 ALLOWED_EXTENSIONS = {'pdf'}
 
@@ -29,7 +29,9 @@ login_manager = LoginManager()
 login_manager.init_app(app)
 
 class User(UserMixin,db.Model):
+    __tablename__ = 'user'
     user_type = db.Column(db.String(80))
+    name = db.Column(db.String(80))
     username = db.Column(db.String(80),primary_key = True)
     password = db.Column(db.String(120))
     
@@ -38,7 +40,9 @@ class User(UserMixin,db.Model):
        
 class File_Data(db.Model):
     __tablename__ = 'file_data'
+    #username Foreign Key
     fileid=db.Column(db.Integer,primary_key = True)
+    username = db.Column(db.String(80), db.ForeignKey('user.username'))
     filepath = db.Column(db.String(40))
     sde = db.Column(db.Integer)
     research = db.Column(db.Integer)
@@ -51,7 +55,8 @@ class File_Data(db.Model):
     def get_id(self):
         return (self.file_path)
     
-    def __init__(self, filepath, sde, research, operations, supplychain, project, data, healthcare):
+    def __init__(self, username,filepath, sde, research, operations, supplychain, project, data, healthcare):
+        self.username = username
         self.filepath =filepath
         self.sde= sde
         self.research=research
@@ -89,13 +94,14 @@ def signup():
 def do_signup():
     if(request.method=='POST'):
         username = request.form.get('username')
+        name = request.form.get('name')
         user_type = request.form.get('user_type')
         password = request.form.get('password')
         check_user = User.query.filter_by(username=username).first()
         if(check_user is not None):
             return render_template("msg_signup.html")
         else:
-            user = User(user_type=user_type, username=username, password=password)
+            user = User(user_type=user_type,name=name, username=username, password=password)
             db.session.add(user)
             db.session.commit()
             return render_template("login.html")
@@ -115,6 +121,8 @@ def do_login():
         if(check_user is not None):
             if(check_user.password == password and check_user.user_type == user_type):
                 login_user(check_user)
+                global _username
+                _username=username
                 if(str(user_type) == 'recruiter'):
                     return render_template("index.html")
                 return render_template("user_seeker.html")
@@ -249,7 +257,7 @@ def parse_pdf(filepath,filename):
                     healthcare +=1
             scores.append(healthcare)
 
-    f=File_Data(filename,scores[0],scores[1],scores[2],scores[3],scores[4],scores[5],scores[6])
+    f=File_Data(_username,filename,scores[0],scores[1],scores[2],scores[3],scores[4],scores[5],scores[6])
     db.session.add(f)
     db.session.commit()
 
@@ -289,8 +297,32 @@ def fetch_data():
     if(request.method == 'POST'):
         area = request.form.get('areas_select')
         if(area is not None):
-            data=File_Data.query.with_entities(text(area),File_Data.filepath).order_by(desc(text(area)))
+            
+            mydb = mysql.connector.connect(host="localhost",user="root",passwd="12345",)
+            my_cursr = mydb.cursor()
+            my_cursr.execute("use resume_build")
+            sql1="SELECT %s,file_data.filepath,user.name FROM file_data,user WHERE file_"%area
+            sql2="data.username = user.username ORDER BY %s DESC"%area
+            sql1=sql1+sql2
+            _area=(area,area)
+            my_cursr.execute(sql1)
+            #my_cursr.execute("SELECT %(res)s from file_data",{'res':area})
+            data = my_cursr.fetchall()
             print(data)
+            # user_name=data[0][2]
+            # my_cursr.execute("SELECT name FROM user WHERE username = %(res)s",{'res':user_name})
+            # my_name = my_cursr.fetchall()
+            # print(my_name)
+            # data=File_Data.query.with_entities(text(area),File_Data.filepath).order_by(desc(text(area)))
+            # print(data)
+            # #name = User.query.filter_by(username=data['username']).first()
+            # #print(name)
+            # data1=User.query.all()
+            # name=""
+            # for i in data1:
+            #     if(i.username == data[7]):
+            #         name=i.name
+            # print(name)        
             return render_template('index.html', data=data)
         else:
             return render_template("index.html")

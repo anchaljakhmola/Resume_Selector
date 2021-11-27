@@ -44,13 +44,15 @@
 <table class="table">
   <thead>
     <tr>
+      <th scope="col">Name</th>
       <th scope="col">Score</th>
       <th scope="col">Resume_pdf</th>
     </tr>
   </thead>
   <tbody>
    {% for item in data %}
-    <tr><td>{{item[0]}}</td>
+    <tr><td>{{item[2]}}</td>
+    <td>{{item[0]}}</td>
     <td><a target=_blank href="http://127.0.0.1:5600/uploads/{{item[1]}}">Download</a></td>
     </tr>
     {% endfor %}
