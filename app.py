@@ -93,7 +93,7 @@ def do_signup():
         password = request.form.get('password')
         check_user = User.query.filter_by(username=username).first()
         if(check_user is not None):
-            return "User already registered, please sign in"
+            return render_template("msg_signup.html")
         else:
             user = User(user_type=user_type, username=username, password=password)
             db.session.add(user)
@@ -119,9 +119,9 @@ def do_login():
                     return render_template("index.html")
                 return render_template("user_seeker.html")
             else:
-                return "Incorrect Password"
+                return render_template("msg_inc_pass.html")
         else:
-            return "No such User exists"
+            return render_template("msg_inc_pass.html")
 
 @app.route('/logout',methods=['GET','POST'])
 @login_required
@@ -278,7 +278,7 @@ def upload_file():
             summry = parse_pdf(filepath,filename)
             return render_template("message.html")                 #redirect(url_for('download_file', name=filename))
             #return redirect(url_for('download_file', name=filename))
-    return "Wrong"
+    return render_template("msg_noupload.html")
 
 @app.route('/uploads/<name>')
 def download_file(name):
