@@ -106,7 +106,7 @@ def do_signup():
             user = User(user_type=user_type,name=name, username=username, password=password)
             db.session.add(user)
             db.session.commit()
-            return render_template("login.html")
+            return render_template("msg_signup_success.html")
 
 @app.route('/login',methods = ['GET', 'POST'])
 def login():
@@ -310,7 +310,7 @@ def fetch_data():
             my_cursr.execute(sql1)
             #my_cursr.execute("SELECT %(res)s from file_data",{'res':area})
             data = my_cursr.fetchall()
-            print(data)
+            #print(data)
             # user_name=data[0][2]
             # my_cursr.execute("SELECT name FROM user WHERE username = %(res)s",{'res':user_name})
             # my_name = my_cursr.fetchall()
