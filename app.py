@@ -97,6 +97,8 @@ def do_signup():
         name = request.form.get('name')
         user_type = request.form.get('user_type')
         password = request.form.get('password')
+        if(username == "" or name=="" or user_type=="Open this select menu" or password==""):
+            return render_template("signup.html")
         check_user = User.query.filter_by(username=username).first()
         if(check_user is not None):
             return render_template("msg_signup.html")
