@@ -51,11 +51,15 @@ class File_Data(db.Model):
     project = db.Column(db.Integer)
     data = db.Column(db.Integer)
     healthcare = db.Column(db.Integer)
+    content = db.Column(db.Integer)
+    marketing = db.Column(db.Integer)
+    teaching = db.Column(db.Integer)
+    security = db.Column(db.Integer)
 
     def get_id(self):
         return (self.file_path)
     
-    def __init__(self, username,filepath, sde, research, operations, supplychain, project, data, healthcare):
+    def __init__(self, username,filepath, sde, research, operations, supplychain, project, data, healthcare,content,teaching,marketing,security):
         self.username = username
         self.filepath =filepath
         self.sde= sde
@@ -65,6 +69,10 @@ class File_Data(db.Model):
         self.project=project
         self.data=data
         self.healthcare=healthcare
+        self.content=content
+        self.marketing=marketing
+        self.teaching=teaching
+        self.security=security
     
 @login_manager.user_loader
 def load_user(user_id):
@@ -200,7 +208,19 @@ def parse_pdf(filepath,filename):
                             'visualuzation'],
             'Healthcare':['adverse events','care','clinic','cphq','ergonomics','healthcare',
                         'health care','health','hospital','human factors','medical','near misses',
-                        'patient','reporting system']}
+                        'patient','reporting system'],
+            'Content Writing':['Bloggers','Social','Media','Posts','Copy','writing','SEO','experience','knowledge', 'sales','product','media','professional','publication','newsletters','Writing','tonality',
+                        'Word','PowerPoint','Excel'],
+              	
+            'Marketing':['business consultant','business plan',' purchase',' branding',' advertising',' remodeling',' and marketing',' increasing monthly sales','social media','followers','marketing campaigns','email','print',' digital',' outdoor','social media', 
+                  'Crafted concept content for journal ads',' direct mail campaigns','blogs','Achieved','Executed','Promoted','','Analyzed','Generated','Researched','Captured','Implemented','Spearheaded','Designed','Increased','Tracked','Developed','Initiated','Utilized'],
+              
+            'Teaching':['Classroom management','Elementary or secondary education','Special education','Student-centered instruction','Parent involvement','interactive learning','Curriculum development',
+			'Learning/instructional styles','Cooperative learning','Differentiated instruction','Distance learning','Behavior analysis/management','Lesson planning','Hands-on learning','Discipline management/strategies',
+			'Educational assessment','Individual learning plan/individualized educational plans (IEP)','Teaching methodologies','Instructional technology','Developmental levels','Student advocate','Classroom instruction'],
+		    
+            'Security Analyst':['Testing','Web','Application','Security','Vulnerability','Assessment','Cybersecurity','Ethical','Hacking','Network Security','Information Security','Application Security','Burp','Suite','Linux','Security','Metasploit','Malware',
+            'Analysis','Programming','Incident','Response']}
 
 
     # Initializie score counters for each area
@@ -211,6 +231,10 @@ def parse_pdf(filepath,filename):
     project = 0
     data = 0
     healthcare = 0
+    content=0
+    marketing=0
+    teaching=0
+    security=0
 
     # Create an empty list where the scores will be stored
     scores = []
@@ -252,14 +276,38 @@ def parse_pdf(filepath,filename):
                 if word in text:
                     data +=1
             scores.append(data)
-            
-        else:
+    
+        elif area == 'Healthcare':
             for word in terms[area]:
                 if word in text:
                     healthcare +=1
             scores.append(healthcare)
 
-    f=File_Data(_username,filename,scores[0],scores[1],scores[2],scores[3],scores[4],scores[5],scores[6])
+        elif area == 'Content Writing':
+            for word in terms[area]:
+                if word in text:
+                    content +=1
+            scores.append(content)
+
+        elif area == 'Marketing':
+            for word in terms[area]:
+                if word in text:
+                    marketing +=1
+            scores.append(marketing)
+
+        elif area == 'Teaching':
+            for word in terms[area]:
+                if word in text:
+                    teaching +=1
+            scores.append(teaching)
+
+        else:
+            for word in terms[area]:
+                if word in text:
+                    security +=1
+            scores.append(security)
+
+    f=File_Data(_username,filename,scores[0],scores[1],scores[2],scores[3],scores[4],scores[5],scores[6],scores[7],scores[8],scores[9],scores[10])
     db.session.add(f)
     db.session.commit()
 
