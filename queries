@@ -13,3 +13,6 @@ CREATE TABLE `resume_build`.`file_data` (
  UNIQUE INDEX `filepath_UNIQUE` (`filepath` ASC) VISIBLE);
  
  #############end##################
+
+
+ALTER TABLE file_data ADD COLUMN content INT UNSIGNED;
