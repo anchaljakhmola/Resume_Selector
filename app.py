@@ -373,7 +373,6 @@ def fetch_data():
             #     if(i.username == data[7]):
             #         name=i.name
             # print(name)  
-		
             return render_template('index.html', data=data)
         else:
             return render_template("index.html")
