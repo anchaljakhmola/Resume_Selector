@@ -1,0 +1,15 @@
+DATABASE NAME: resume_build
+
+ | Tables_in_resume_build |
++------------------------+
+| file_data              |
+| user  
+
+
+ user table:
+ id | name   | username | password | user_type 
+
+
+file_data table:
+id | username | filepath              | sde  | research | operations | supplychain | project | data | healthcare | content | marketing | teaching | security |
+
